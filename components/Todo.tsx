@@ -22,11 +22,16 @@ export default function TodoList() {
     try {
       const savedTodos = localStorage.getItem('todos');
       if (savedTodos) {
-        setTodos(JSON.parse(savedTodos));
+        const parsed = JSON.parse(savedTodos);
+        if (!Array.isArray(parsed)) {
+          throw new Error('Invalid todos format');
+        }
+        setTodos(parsed);
       }
-    } catch (err) {
-      setError('Failed to load todos');
-    } finally {
+    } catch (error) {
+      setError('Failed to load todos: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    }
+    finally {
       setIsLoading(false);
     }
   }, []);
